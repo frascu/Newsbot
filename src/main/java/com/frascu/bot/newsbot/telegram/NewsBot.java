@@ -3,19 +3,23 @@ package com.frascu.bot.newsbot.telegram;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
 public class NewsBot extends TelegramLongPollingBot {
 
+	private static final Logger LOGGER = Logger.getLogger(NewsBot.class.getName());
+
 	private String token;
 	private String admin;
-	private static final String BOT_NAME = "NewsBot";
+	private String name;
 
 	public NewsBot() {
 		super();
-		
+
 		// load a properties file
 		Properties prop = new Properties();
 
@@ -25,15 +29,18 @@ public class NewsBot extends TelegramLongPollingBot {
 			e.printStackTrace();
 		}
 
-		// get the property values
+		LOGGER.log(Level.FINE, "Reading parameters from configuration file.");
 		this.token = prop.getProperty("token");
 		this.admin = prop.getProperty("admin");
+		this.name = prop.getProperty("admin");
 	}
 
+	@Override
 	public String getBotUsername() {
-		return BOT_NAME;
+		return name;
 	}
 
+	@Override
 	public void onUpdateReceived(Update arg0) {
 	}
 

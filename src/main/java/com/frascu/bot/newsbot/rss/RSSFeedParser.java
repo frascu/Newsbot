@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -21,6 +23,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class RSSFeedParser {
+
+	private static final Logger LOGGER = Logger.getLogger(RSSFeedParser.class.getName());
+
 	static final String TITLE = "title";
 	static final String DESCRIPTION = "description";
 	static final String CHANNEL = "channel";
@@ -32,74 +37,70 @@ public class RSSFeedParser {
 	static final String PUB_DATE = "pubDate";
 	static final String GUID = "guid";
 
-	final URL url;
+	private URL url;
 
 	public RSSFeedParser(String feedUrl) {
 		try {
 			this.url = new URL(feedUrl);
 		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
+			LOGGER.log(Level.SEVERE, "Bad url", e);
 		}
 	}
 
 	public List<FeedMessage> readFeed() {
-		List<FeedMessage> feed = new ArrayList<FeedMessage>();
+		List<FeedMessage> feed = new ArrayList<>();
+		if (url != null) {
+			// First create a new XMLInputFactory
+			DocumentBuilderFactory inputFactory = DocumentBuilderFactory.newInstance();
 
-		// First create a new XMLInputFactory
-		DocumentBuilderFactory inputFactory = DocumentBuilderFactory.newInstance();
-		// Setup a new eventReader
-		InputStream in = read();
-		Document doc;
-		try {
-			doc = inputFactory.newDocumentBuilder().parse(in);
+			try {
+				// Setup a new eventReader
+				InputStream in = read();
+				Document doc = inputFactory.newDocumentBuilder().parse(in);
 
-			// read the XML document
-			NodeList nList = doc.getElementsByTagName(ITEM);
-			for (int temp = 0; temp < nList.getLength(); temp++) {
-				Node node = nList.item(temp);
-				if (node.getNodeType() == Node.ELEMENT_NODE) {
-					Element element = (Element) node;
-					FeedMessage feedMessage = new FeedMessage();
-					feedMessage.setTitle(getCharacterData(element, TITLE));
-					feedMessage.setAuthor(getCharacterData(element, AUTHOR));
-					feedMessage.setLink(getCharacterData(element, LINK));
-					feedMessage.setDescription(getCharacterData(element, DESCRIPTION));
-					feedMessage.setGuid(getCharacterData(element, GUID));
+				// read the XML document
+				readNodes(feed, doc.getElementsByTagName(ITEM));
 
-					// Get publication date
-					DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss +0000", Locale.ENGLISH);
-					try {
-						feedMessage.setPubDate(format.parse(getCharacterData(element, PUB_DATE)));
-					} catch (ParseException e) {
-						feedMessage.setPubDate(null);
-					}
-
-					// Show the date and the title of the feed message
-					System.out.println(new StringBuilder("DATE: ").append(feedMessage.getPubDate()).append(", TITLE: ")
-							.append(feedMessage.getTitle()).toString());
-
-					feed.add(feedMessage);
-				}
+			} catch (SAXException | IOException | ParserConfigurationException e) {
+				LOGGER.log(Level.SEVERE, "Exception parsing the document", e);
 			}
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
 		}
 		return feed;
+	}
+
+	private void readNodes(List<FeedMessage> feed, NodeList nList) {
+		for (int temp = 0; temp < nList.getLength(); temp++) {
+			Node node = nList.item(temp);
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element element = (Element) node;
+				FeedMessage feedMessage = new FeedMessage();
+				feedMessage.setTitle(getCharacterData(element, TITLE));
+				feedMessage.setAuthor(getCharacterData(element, AUTHOR));
+				feedMessage.setLink(getCharacterData(element, LINK));
+				feedMessage.setDescription(getCharacterData(element, DESCRIPTION));
+				feedMessage.setGuid(getCharacterData(element, GUID));
+
+				// Get publication date
+				DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss +0000", Locale.ENGLISH);
+				try {
+					feedMessage.setPubDate(format.parse(getCharacterData(element, PUB_DATE)));
+				} catch (ParseException e) {
+					LOGGER.log(Level.SEVERE, "Impossible to parse the publication date", e);
+				}
+
+				LOGGER.log(Level.INFO, new StringBuilder("DATE: ").append(feedMessage.getPubDate()).append(", TITLE: ")
+						.append(feedMessage.getTitle()).toString());
+
+				feed.add(feedMessage);
+			}
+		}
 	}
 
 	private String getCharacterData(Element element, String tagName) {
 		return element.getElementsByTagName(tagName).item(0).getTextContent();
 	}
 
-	private InputStream read() {
-		try {
-			return url.openStream();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+	private InputStream read() throws IOException {
+		return url.openStream();
 	}
 }

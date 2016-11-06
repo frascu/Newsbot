@@ -1,11 +1,13 @@
 package com.frascu.bot.newsbot.schedule;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.apache.log4j.Logger;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
@@ -13,20 +15,16 @@ import com.frascu.bot.newsbot.rss.FeedMessage;
 import com.frascu.bot.newsbot.rss.RSSFeedParser;
 import com.frascu.bot.newsbot.telegram.NewsBot;
 
-public class SchedulerBot {
+public class NewsJob implements Job {
 
-	private static final Logger LOGGER = Logger.getLogger(SchedulerBot.class);
+	private static final Logger LOGGER = Logger.getLogger(NewsJob.class);
 
-	public SchedulerBot() {
+	public NewsJob() {
 		super();
 	}
 
-	public static void main(String[] args) throws ParseException {
-		SchedulerBot schedulerBot = new SchedulerBot();
-		schedulerBot.execute();
-	}
-
-	public void execute() {
+	@Override
+	public void execute(JobExecutionContext context) throws JobExecutionException {
 		// Read RSS
 		RSSFeedParser parser = new RSSFeedParser(
 				"http://www.comune.sannicandro.bari.it/index.php?format=feed&type=rss");
@@ -59,7 +57,7 @@ public class SchedulerBot {
 				LOGGER.error("Impossible to send the message.", e);
 			}
 		} else {
-			LOGGER.info("Today There are no messages to send.");
+			LOGGER.info("There are no messages to send.");
 		}
 	}
 

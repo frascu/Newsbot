@@ -10,12 +10,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -24,7 +23,7 @@ import org.xml.sax.SAXException;
 
 public class RSSFeedParser {
 
-	private static final Logger LOGGER = Logger.getLogger(RSSFeedParser.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(RSSFeedParser.class);
 
 	static final String TITLE = "title";
 	static final String DESCRIPTION = "description";
@@ -43,7 +42,7 @@ public class RSSFeedParser {
 		try {
 			this.url = new URL(feedUrl);
 		} catch (MalformedURLException e) {
-			LOGGER.log(Level.SEVERE, "Bad url", e);
+			LOGGER.error("Bad url", e);
 		}
 	}
 
@@ -62,7 +61,7 @@ public class RSSFeedParser {
 				readNodes(feed, doc.getElementsByTagName(ITEM));
 
 			} catch (SAXException | IOException | ParserConfigurationException e) {
-				LOGGER.log(Level.SEVERE, "Exception parsing the document", e);
+				LOGGER.error("Exception parsing the document", e);
 			}
 		}
 		return feed;
@@ -85,10 +84,10 @@ public class RSSFeedParser {
 				try {
 					feedMessage.setPubDate(format.parse(getCharacterData(element, PUB_DATE)));
 				} catch (ParseException e) {
-					LOGGER.log(Level.SEVERE, "Impossible to parse the publication date", e);
+					LOGGER.error("Impossible to parse the publication date", e);
 				}
 
-				LOGGER.log(Level.INFO, new StringBuilder("DATE: ").append(feedMessage.getPubDate()).append(", TITLE: ")
+				LOGGER.debug(new StringBuilder("DATE: ").append(feedMessage.getPubDate()).append(", TITLE: ")
 						.append(feedMessage.getTitle()).toString());
 
 				feed.add(feedMessage);

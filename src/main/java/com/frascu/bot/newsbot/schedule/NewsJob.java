@@ -13,7 +13,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import com.frascu.bot.newsbot.rss.FeedMessage;
 import com.frascu.bot.newsbot.rss.RSSFeedParser;
-import com.frascu.bot.newsbot.telegram.NewsBot;
+import com.frascu.bot.newsbot.telegram.handler.NewsHandler;
 
 public class NewsJob implements Job {
 
@@ -25,6 +25,7 @@ public class NewsJob implements Job {
 
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
+
 		// Read RSS
 		RSSFeedParser parser = new RSSFeedParser(
 				"http://www.comune.sannicandro.bari.it/index.php?format=feed&type=rss");
@@ -42,7 +43,7 @@ public class NewsJob implements Job {
 			FeedMessage lastMessageToSend = optional.get();
 
 			// Create bot
-			NewsBot bot = new NewsBot();
+			NewsHandler bot = new NewsHandler();
 
 			// Send Message
 			LOGGER.info("Sending the message...");

@@ -11,6 +11,10 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
+import org.telegram.telegrambots.TelegramBotsApi;
+import org.telegram.telegrambots.exceptions.TelegramApiException;
+
+import com.frascu.bot.newsbot.telegram.handler.CommandsHandler;
 
 public class NewsScheduler {
 
@@ -21,6 +25,15 @@ public class NewsScheduler {
 	public NewsScheduler() throws SchedulerException {
 		super();
 
+		// The job that answer to the user
+		try {
+			TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
+			telegramBotsApi.registerBot(new CommandsHandler());
+		} catch (TelegramApiException e) {
+			LOGGER.error("Impossible to create the bot.", e);
+		}
+
+		// The Job that send the news
 		LOGGER.debug("Defining the job");
 		JobDetail job = JobBuilder.newJob(NewsJob.class).withIdentity("job1", "group1").build();
 

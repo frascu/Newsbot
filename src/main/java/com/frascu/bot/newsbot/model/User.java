@@ -1,8 +1,8 @@
 package com.frascu.bot.newsbot.model;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -10,15 +10,22 @@ import javax.persistence.Table;
 @Table(name = "USER_TELEGRAM")
 public class User {
 
-	@Id @GeneratedValue
+	@Id
 	@Column(name = "USER_ID")
 	private long id;
 
 	@Column(name = "USER_NAME")
 	private String userName;
 
-	@Column(name = "USER_TELEGRAM_NO")
-	private String telegramNo;
+	@Column(name = "FIRST_NAME")
+	private String firstName;
+
+	@Column(name = "LAST_NAME")
+	private String lastName;
+
+	@Column(name = "REGISTERED")
+	@Convert(converter = YesNoConverterToBoolean.class)
+	private boolean registered;
 
 	public User() {
 		super();
@@ -40,12 +47,28 @@ public class User {
 		this.userName = userName;
 	}
 
-	public String getTelegramNo() {
-		return telegramNo;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setTelegramNo(String telegramNo) {
-		this.telegramNo = telegramNo;
+	public void setFirstName(String fistName) {
+		this.firstName = fistName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public boolean isRegistered() {
+		return registered;
+	}
+
+	public void setRegistered(boolean registered) {
+		this.registered = registered;
 	}
 
 }

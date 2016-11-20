@@ -3,15 +3,14 @@ package com.frascu.bot.newsbot.telegram;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.apache.log4j.Logger;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
 public class NewsBot extends TelegramLongPollingBot {
 
-	private static final Logger LOGGER = Logger.getLogger(NewsBot.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(NewsBot.class);
 
 	private String token;
 	private String admin;
@@ -26,10 +25,10 @@ public class NewsBot extends TelegramLongPollingBot {
 		try {
 			prop.load(new FileInputStream("config.properties"));
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Reading parameters from configuration file.", e);
 		}
 
-		LOGGER.log(Level.FINE, "Reading parameters from configuration file.");
+		LOGGER.info("Reading parameters from configuration file.");
 		this.token = prop.getProperty("token");
 		this.admin = prop.getProperty("admin");
 		this.name = prop.getProperty("admin");
@@ -42,6 +41,7 @@ public class NewsBot extends TelegramLongPollingBot {
 
 	@Override
 	public void onUpdateReceived(Update arg0) {
+		//TO COMPLETE
 	}
 
 	@Override

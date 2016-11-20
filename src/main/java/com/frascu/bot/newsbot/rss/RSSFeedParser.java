@@ -96,7 +96,7 @@ public class RSSFeedParser {
 	}
 
 	private String getCharacterData(Element element, String tagName) {
-		return element.getElementsByTagName(tagName).item(0).getTextContent();
+		return element.getElementsByTagName(tagName).item(0).getFirstChild().getNodeValue();
 	}
 
 	private InputStream read() throws IOException {

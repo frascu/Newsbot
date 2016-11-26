@@ -47,6 +47,7 @@
 			<version>${hibernate.version}</version>
 		</dependency>
 
+
 		<!-- For connection pooling -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -92,6 +93,15 @@
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+					<!-- <excludes> -->
+					<!-- <exclude>**/log4j.properties</exclude> -->
+					<!-- </excludes> -->
+<!-- 					<archive> -->
+<!-- 						<manifest> -->
+<!-- 							Jar file entry point -->
+<!-- 							<mainClass>com.frascu.bot.newsbot.schedule.NewsScheduler</mainClass> -->
+<!-- 						</manifest> -->
+<!-- 					</archive> -->
 				</configuration>
 			</plugin>
 		</plugins>

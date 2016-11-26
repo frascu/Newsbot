@@ -1,5 +1,10 @@
 package com.frascu.bot.newsbot.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.NoResultException;
+
 import org.apache.log4j.Logger;
 
 import com.frascu.bot.newsbot.model.User;
@@ -56,6 +61,17 @@ public class UserDao extends DaoBase {
 	public boolean isRegistered(long userId) {
 		User user = em.find(User.class, userId);
 		return user != null && user.isRegistered();
+	}
+
+	public List<Long> getUserIdsRegistered() {
+		try {
+			String query = new StringBuilder("select id from ").append(User.class.getCanonicalName())
+					.append(" where registered = 'Y'").toString();
+			return em.createQuery(query, Long.class).getResultList();
+		} catch (NoResultException e) {
+			LOGGER.debug("No user registered", e);
+			return new ArrayList<>();
+		}
 	}
 
 }

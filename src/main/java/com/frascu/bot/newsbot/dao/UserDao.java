@@ -66,8 +66,8 @@ public class UserDao extends DaoBase {
 	public List<Long> getUserIdsRegistered() {
 		try {
 			String query = new StringBuilder("select id from ").append(User.class.getCanonicalName())
-					.append(" where registered = 'Y'").toString();
-			return em.createQuery(query, Long.class).getResultList();
+					.append(" where registered = :registered").toString();
+			return em.createQuery(query, Long.class).setParameter("registered", true).getResultList();
 		} catch (NoResultException e) {
 			LOGGER.debug("No user registered", e);
 			return new ArrayList<>();

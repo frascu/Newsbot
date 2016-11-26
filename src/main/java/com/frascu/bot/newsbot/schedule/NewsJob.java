@@ -1,6 +1,5 @@
 package com.frascu.bot.newsbot.schedule;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +42,7 @@ public class NewsJob implements Job {
 			// Optional<FeedMessage> optional = feed.stream().findFirst();
 
 			if (optional.isPresent()) {
-				sendMessageToAllUsers( optional.get(), new NewsHandler());
+				sendMessageToAllUsers(optional.get(), new NewsHandler());
 			} else {
 				LOGGER.info("There are no messages to send.");
 			}

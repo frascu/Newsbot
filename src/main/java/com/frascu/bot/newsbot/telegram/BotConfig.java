@@ -1,5 +1,6 @@
 package com.frascu.bot.newsbot.telegram;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -13,10 +14,14 @@ public class BotConfig {
 
 	static { // load a properties file
 		prop = new Properties();
+		File file = new File("config.properties");
 		try {
-			prop.load(new FileInputStream("config.properties"));
+			file = new File("config.properties");
+			prop.load(new FileInputStream(file));
+			LOGGER.info("Properties read from configuration file: " + file.getAbsolutePath());
 		} catch (IOException e) {
-			LOGGER.error("Reading parameters from configuration file.", e);
+			LOGGER.error("Error!!! Impossible to read properties from the configuration file: " + file.getAbsolutePath(), e);
+			System.exit(0);
 		}
 	}
 

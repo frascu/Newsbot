@@ -14,6 +14,7 @@ public class StopCommand extends BotCommand {
 
 	private static final Logger LOGGER = Logger.getLogger(StopCommand.class);
 	public static final String LOGTAG = "STOPCOMMAND";
+	private final String info = COMMAND_INIT_CHARACTER + getCommandIdentifier() + "\n" + getDescription();
 
 	public StopCommand() {
 		super("stop", "Cancella l'iscrizione a questo bot");
@@ -32,5 +33,10 @@ public class StopCommand extends BotCommand {
 		} catch (TelegramApiException e) {
 			LOGGER.error(LOGTAG, e);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return info;
 	}
 }

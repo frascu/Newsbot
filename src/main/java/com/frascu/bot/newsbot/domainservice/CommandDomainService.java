@@ -53,6 +53,6 @@ public class CommandDomainService {
 		for (String command : commands) {
 			helpMessageBuilder.append(command).append("\n\n");
 		}
-		return null;
+		return helpMessageBuilder.toString();
 	}
 }

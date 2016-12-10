@@ -22,6 +22,7 @@ import com.frascu.bot.newsbot.domainservice.CommandDomainService;
 public class HelpCommand extends BotCommand {
 
 	private static final String LOGTAG = "HELPCOMMAND";
+	private final String info = COMMAND_INIT_CHARACTER + getCommandIdentifier() + "\n" + getDescription();
 
 	private final ICommandRegistry commandRegistry;
 
@@ -47,5 +48,10 @@ public class HelpCommand extends BotCommand {
 		} catch (TelegramApiException e) {
 			BotLogger.error(LOGTAG, e);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return info;
 	}
 }

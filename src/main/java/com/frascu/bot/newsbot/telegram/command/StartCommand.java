@@ -14,6 +14,7 @@ public class StartCommand extends BotCommand {
 
 	private static final Logger LOGGER = Logger.getLogger(StartCommand.class);
 	public static final String LOGTAG = "STARTCOMMAND";
+	private final String info = COMMAND_INIT_CHARACTER + getCommandIdentifier() + "\n" + getDescription();
 
 	public StartCommand() {
 		super("start", "Ti iscrive alle notizie di questo bot");
@@ -32,5 +33,10 @@ public class StartCommand extends BotCommand {
 		} catch (TelegramApiException e) {
 			LOGGER.error(LOGTAG, e);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return info;
 	}
 }

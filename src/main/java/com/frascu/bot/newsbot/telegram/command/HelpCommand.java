@@ -16,8 +16,6 @@ import com.frascu.bot.newsbot.domainservice.CommandDomainService;
 
 /**
  * This command helps the user to find the command they need
- *
- * @author Timo Schulz (Mit0x2)
  */
 public class HelpCommand extends BotCommand {
 

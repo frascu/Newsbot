@@ -8,6 +8,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import com.frascu.bot.newsbot.telegram.BotConfig;
 import com.frascu.bot.newsbot.telegram.Emoji;
+import com.frascu.bot.newsbot.telegram.command.AdminCommand;
 import com.frascu.bot.newsbot.telegram.command.HelpCommand;
 import com.frascu.bot.newsbot.telegram.command.StartCommand;
 import com.frascu.bot.newsbot.telegram.command.StopCommand;
@@ -25,6 +26,7 @@ public class CommandsHandler extends TelegramLongPollingCommandBot {
 		register(new StopCommand());
 		HelpCommand helpCommand = new HelpCommand(this);
 		register(helpCommand);
+		register(new AdminCommand());
 
 		registerDefaultAction((absSender, message) -> {
 			SendMessage commandUnknownMessage = new SendMessage();

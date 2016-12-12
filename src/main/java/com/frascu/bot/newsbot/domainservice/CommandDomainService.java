@@ -5,6 +5,7 @@ import java.util.List;
 import org.telegram.telegrambots.api.objects.User;
 
 import com.frascu.bot.newsbot.dao.UserDao;
+import com.frascu.bot.newsbot.dto.UserDto;
 
 public class CommandDomainService {
 
@@ -54,5 +55,23 @@ public class CommandDomainService {
 			helpMessageBuilder.append(command).append("\n\n");
 		}
 		return helpMessageBuilder.toString();
+	}
+
+	public static String admin(String[] strings) {
+
+		UserDao userDao = new UserDao();
+		StringBuilder messageBuilder = new StringBuilder();
+
+		List<UserDto> users = userDao.getAllUsers();
+
+		if (!users.isEmpty()) {
+			messageBuilder.append("<b>Utenti:</b>\n");
+			for (UserDto user : users) {
+				messageBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).append(" - ")
+						.append(user.isRegistered() ? "iscritto" : "non iscritto").append("\n");
+			}
+		}
+
+		return messageBuilder.toString();
 	}
 }

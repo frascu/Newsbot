@@ -1,12 +1,11 @@
 package com.frascu.bot.newsbot.dao;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.NoResultException;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
+import com.frascu.bot.newsbot.dto.UserDto;
 import com.frascu.bot.newsbot.model.User;
 
 public class UserDao extends DaoBase {
@@ -64,14 +63,18 @@ public class UserDao extends DaoBase {
 	}
 
 	public List<Long> getUserIdsRegistered() {
-		try {
-			String query = new StringBuilder("select id from ").append(User.class.getCanonicalName())
-					.append(" where registered = :registered").toString();
-			return em.createQuery(query, Long.class).setParameter("registered", true).getResultList();
-		} catch (NoResultException e) {
-			LOGGER.debug("No user registered", e);
-			return new ArrayList<>();
-		}
+		String query = new StringBuilder("select id from ").append(User.class.getCanonicalName())
+				.append(" where registered = :registered").toString();
+		return em.createQuery(query, Long.class).setParameter("registered", true).getResultList();
+	}
+
+	public List<UserDto> getAllUsers() {
+		String query = new StringBuilder("select user from ").append(User.class.getCanonicalName())
+				.append(" user order by registered, firstName, lastName").toString();
+		List<User> users = em.createQuery(query, User.class).getResultList();
+
+		return users.stream().map(entity -> new UserDto(entity.getUserName(), entity.getFirstName(),
+				entity.getLastName(), entity.isRegistered())).collect(Collectors.toList());
 	}
 
 }

@@ -20,6 +20,8 @@ public class NewsJob implements Job {
 
 	private static final Logger LOGGER = Logger.getLogger(NewsJob.class);
 
+	private UserDao userDao = UserDao.getInstance();
+
 	public NewsJob() {
 		super();
 	}
@@ -39,7 +41,6 @@ public class NewsJob implements Job {
 
 			LOGGER.info("Getting the last message to send...");
 			Optional<FeedMessage> optional = feed.stream().filter(n -> day.before(n.getPubDate())).findFirst();
-			// Optional<FeedMessage> optional = feed.stream().findFirst();
 
 			if (optional.isPresent()) {
 				sendMessageToAllUsers(optional.get(), new NewsHandler());
@@ -52,9 +53,11 @@ public class NewsJob implements Job {
 	}
 
 	private void sendMessageToAllUsers(FeedMessage lastMessageToSend, NewsHandler bot) {
-		new UserDao().getUserIdsRegistered().forEach(userId -> {
+
+		List<Long> userIds = userDao.getUserIdsRegistered();
+		for (Long userId : userIds) {
 			// Send Message
-			LOGGER.info("Sending the message...");
+			LOGGER.debug("Sending the message...");
 			SendMessage message = new SendMessage();
 			message.setChatId(userId.toString());
 			message.setText(lastMessageToSend.getLink());
@@ -64,7 +67,8 @@ public class NewsJob implements Job {
 			} catch (TelegramApiException e) {
 				LOGGER.error("Impossible to send the message.", e);
 			}
-		});
+		}
+
 	}
 
 }

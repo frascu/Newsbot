@@ -12,6 +12,16 @@ public class UserDao extends DaoBase {
 
 	private static final Logger LOGGER = Logger.getLogger(UserDao.class);
 
+	private static UserDao instance = new UserDao();
+
+	private UserDao() {
+		super();
+	}
+
+	public static UserDao getInstance() {
+		return instance;
+	}
+
 	public void registerUser(long userId, String userName, String firstName, String lastName) {
 		try {
 			beginTransaction();

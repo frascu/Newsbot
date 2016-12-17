@@ -1,20 +1,29 @@
-package com.frascu.bot.newsbot.domainservice;
+package com.frascu.bot.newsbot.domain.service;
 
 import java.util.List;
 
 import org.telegram.telegrambots.api.objects.User;
 
 import com.frascu.bot.newsbot.dao.UserDao;
+import com.frascu.bot.newsbot.dto.CommandDto;
 import com.frascu.bot.newsbot.dto.UserDto;
 
 public class CommandDomainService {
+
+	private static CommandDomainService instance = new CommandDomainService();
+	private UserDao userDao = UserDao.getInstance();
+
+	private static final String COMMAND_NOT_EXISTING = "Il comando selezionato non esiste";
 
 	private CommandDomainService() {
 		super();
 	}
 
-	public static String start(User user) {
-		UserDao userDao = new UserDao();
+	public static CommandDomainService getInstance() {
+		return instance;
+	}
+
+	public String start(User user) {
 		StringBuilder messageBuilder = new StringBuilder();
 		String userName = user.getFirstName() + " " + user.getLastName();
 
@@ -29,8 +38,7 @@ public class CommandDomainService {
 		return messageBuilder.toString();
 	}
 
-	public static String stop(User user) {
-		UserDao userDao = new UserDao();
+	public String stop(User user) {
 		StringBuilder messageBuilder = new StringBuilder();
 
 		String userName = user.getFirstName() + " " + user.getLastName();
@@ -46,32 +54,46 @@ public class CommandDomainService {
 		return messageBuilder.toString();
 	}
 
-	public static String help(List<String> commands) {
+	public String help(List<CommandDto> commands, boolean isAdmin) {
 
 		StringBuilder helpMessageBuilder = new StringBuilder("<b>Aiuto</b>\n");
 		helpMessageBuilder.append("I comandi disponibili sono i seguenti:\n\n");
 
-		for (String command : commands) {
-			helpMessageBuilder.append(command).append("\n\n");
-		}
+		commands.stream().filter(command -> (!"admin".equals(command.getCommandIdentifier()) && !isAdmin) || isAdmin)
+				.forEach(command -> helpMessageBuilder.append(command).append("\n\n"));
+
 		return helpMessageBuilder.toString();
 	}
 
-	public static String admin(String[] strings) {
+	public String admin(String[] strings) {
 
-		UserDao userDao = new UserDao();
 		StringBuilder messageBuilder = new StringBuilder();
 
-		List<UserDto> users = userDao.getAllUsers();
+		if (strings != null && strings.length > 0) {
 
+			if (strings[0].equals("users")) {
+				getMessageWithAllUsers(messageBuilder, userDao.getAllUsers());
+			} else {
+				messageBuilder.append(COMMAND_NOT_EXISTING);
+			}
+		} else {
+			messageBuilder.append(COMMAND_NOT_EXISTING);
+		}
+		return messageBuilder.toString();
+	}
+
+	private void getMessageWithAllUsers(StringBuilder messageBuilder, List<UserDto> users) {
 		if (!users.isEmpty()) {
 			messageBuilder.append("<b>Utenti:</b>\n");
 			for (UserDto user : users) {
-				messageBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).append(" - ")
-						.append(user.isRegistered() ? "iscritto" : "non iscritto").append("\n");
+				messageBuilder//
+						.append(user.getFirstName()).append(" ")//
+						.append(user.getLastName()).append(" - ")//
+						.append(user.getUserName()).append(" - ")//
+						.append(user.isRegistered() ? "iscritto" : "non iscritto")//
+						.append("\n");
 			}
 		}
-
-		return messageBuilder.toString();
 	}
+
 }

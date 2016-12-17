@@ -24,9 +24,9 @@ public class CommandsHandler extends TelegramLongPollingCommandBot {
 		// register(new HelloCommand());
 		register(new StartCommand());
 		register(new StopCommand());
+		register(new AdminCommand());
 		HelpCommand helpCommand = new HelpCommand(this);
 		register(helpCommand);
-		register(new AdminCommand());
 
 		registerDefaultAction((absSender, message) -> {
 			SendMessage commandUnknownMessage = new SendMessage();

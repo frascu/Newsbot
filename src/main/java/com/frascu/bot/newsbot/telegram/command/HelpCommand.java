@@ -7,39 +7,51 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Chat;
 import org.telegram.telegrambots.api.objects.User;
 import org.telegram.telegrambots.bots.AbsSender;
-import org.telegram.telegrambots.bots.commands.BotCommand;
 import org.telegram.telegrambots.bots.commands.ICommandRegistry;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.logging.BotLogger;
 
-import com.frascu.bot.newsbot.domainservice.CommandDomainService;
+import com.frascu.bot.newsbot.domain.service.CommandDomainService;
+import com.frascu.bot.newsbot.dto.CommandDto;
+import com.frascu.bot.newsbot.telegram.BotConfig;
+import com.frascu.bot.newsbot.telegram.custom.NewsBotCommand;
 
 /**
  * This command helps the user to find the command they need
  */
-public class HelpCommand extends BotCommand {
+public class HelpCommand extends NewsBotCommand {
 
 	private static final String LOGTAG = "HELPCOMMAND";
-	private final String info = COMMAND_INIT_CHARACTER + getCommandIdentifier() + "\n" + getDescription();
 
-	private final ICommandRegistry commandRegistry;
+	private List<CommandDto> commands;
+	/**
+	 * The message for the help.
+	 */
+	private String message;
+	private String messageAdmin;
 
 	public HelpCommand(ICommandRegistry commandRegistry) {
 		super("help", "Mostra tutti i comandi disponibili");
-		this.commandRegistry = commandRegistry;
+		commands = commandRegistry.getRegisteredCommands().stream()
+				.map(command -> new CommandDto(command.getCommandIdentifier(), command.getDescription()))
+				.collect(Collectors.toList());
+		commands.add(new CommandDto(this.getCommandIdentifier(), this.getDescription()));
+		message = CommandDomainService.getInstance().help(commands, false);
+		messageAdmin = CommandDomainService.getInstance().help(commands, true);
 	}
 
 	@Override
 	public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-
-		List<String> commands = commandRegistry.getRegisteredCommands().stream().map(command -> command.toString())
-				.collect(Collectors.toList());
-		String message = CommandDomainService.help(commands);
-
+		
 		SendMessage helpMessage = new SendMessage();
 		helpMessage.setChatId(chat.getId().toString());
 		helpMessage.enableHtml(true);
-		helpMessage.setText(message);
+
+		if (new Long(BotConfig.ADMIN).equals(chat.getId())) {
+			helpMessage.setText(messageAdmin);
+		} else {
+			helpMessage.setText(message);
+		}
 
 		try {
 			absSender.sendMessage(helpMessage);
@@ -48,8 +60,4 @@ public class HelpCommand extends BotCommand {
 		}
 	}
 
-	@Override
-	public String toString() {
-		return info;
-	}
 }

@@ -5,16 +5,14 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Chat;
 import org.telegram.telegrambots.api.objects.User;
 import org.telegram.telegrambots.bots.AbsSender;
-import org.telegram.telegrambots.bots.commands.BotCommand;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
-import com.frascu.bot.newsbot.domainservice.CommandDomainService;
+import com.frascu.bot.newsbot.telegram.custom.NewsBotCommand;
 
-public class StopCommand extends BotCommand {
+public class StopCommand extends NewsBotCommand {
 
 	private static final Logger LOGGER = Logger.getLogger(StopCommand.class);
 	public static final String LOGTAG = "STOPCOMMAND";
-	private final String info = COMMAND_INIT_CHARACTER + getCommandIdentifier() + "\n" + getDescription();
 
 	public StopCommand() {
 		super("stop", "Cancella l'iscrizione a questo bot");
@@ -22,8 +20,8 @@ public class StopCommand extends BotCommand {
 
 	@Override
 	public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-		String message = CommandDomainService.stop(user);
 
+		String message = commandDomainService.stop(user);
 		SendMessage answer = new SendMessage();
 		answer.setChatId(chat.getId().toString());
 		answer.setText(message);
@@ -35,8 +33,4 @@ public class StopCommand extends BotCommand {
 		}
 	}
 
-	@Override
-	public String toString() {
-		return info;
-	}
 }

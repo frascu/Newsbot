@@ -20,7 +20,7 @@ public class UserDto {
 	}
 
 	public String getUserName() {
-		return userName;
+		return userName == null ? "" : userName;
 	}
 
 	public void setUserName(String userName) {
@@ -28,7 +28,7 @@ public class UserDto {
 	}
 
 	public String getFirstName() {
-		return firstName;
+		return firstName == null ? "" : firstName;
 	}
 
 	public void setFirstName(String firstName) {
@@ -36,7 +36,7 @@ public class UserDto {
 	}
 
 	public String getLastName() {
-		return lastName;
+		return lastName == null ? "" : lastName;
 	}
 
 	public void setLastName(String lastName) {

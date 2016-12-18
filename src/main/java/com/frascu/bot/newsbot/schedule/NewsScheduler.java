@@ -50,7 +50,7 @@ public class NewsScheduler {
 
 			LOGGER.debug("Trigger the job to run now and repeat every 30 seconds");
 			Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger1", "group1").startNow()
-					.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(30).repeatForever())
+					.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(120).repeatForever())
 					.build();
 
 			LOGGER.debug("Creating and starting the scheduler");

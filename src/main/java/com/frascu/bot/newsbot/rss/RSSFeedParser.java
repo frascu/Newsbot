@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -36,32 +37,36 @@ public class RSSFeedParser {
 	static final String PUB_DATE = "pubDate";
 	static final String GUID = "guid";
 
-	private URL url;
+	private List<URL> urls = new ArrayList<>();
 
-	public RSSFeedParser(String feedUrl) {
-		try {
-			this.url = new URL(feedUrl);
-		} catch (MalformedURLException e) {
-			LOGGER.error("Bad url", e);
+	public RSSFeedParser(List<String> feedUrls) {
+		for (String feedUrl : feedUrls) {
+			try {
+				this.urls.add(new URL(feedUrl));
+			} catch (MalformedURLException e) {
+				LOGGER.error("Bad url", e);
+			}
 		}
 	}
 
 	public List<FeedMessage> readFeed() {
 		List<FeedMessage> feed = new ArrayList<>();
-		if (url != null) {
-			// First create a new XMLInputFactory
-			DocumentBuilderFactory inputFactory = DocumentBuilderFactory.newInstance();
+		if (!urls.isEmpty()) {
+			for (URL url : urls) {
+				// First create a new XMLInputFactory
+				DocumentBuilderFactory inputFactory = DocumentBuilderFactory.newInstance();
 
-			try {
-				// Setup a new eventReader
-				InputStream in = read();
-				Document doc = inputFactory.newDocumentBuilder().parse(in);
+				try {
+					// Setup a new eventReader
+					InputStream in = openStream(url);
+					Document doc = inputFactory.newDocumentBuilder().parse(in);
 
-				// read the XML document
-				readNodes(feed, doc.getElementsByTagName(ITEM));
+					// read the XML document
+					readNodes(feed, doc.getElementsByTagName(ITEM));
 
-			} catch (SAXException | IOException | ParserConfigurationException e) {
-				LOGGER.error("Exception parsing the document", e);
+				} catch (SAXException | IOException | ParserConfigurationException e) {
+					LOGGER.error("Exception parsing the document", e);
+				}
 			}
 		}
 		return feed;
@@ -75,31 +80,66 @@ public class RSSFeedParser {
 				FeedMessage feedMessage = new FeedMessage();
 				feedMessage.setTitle(getCharacterData(element, TITLE));
 				feedMessage.setAuthor(getCharacterData(element, AUTHOR));
-				feedMessage.setLink(getCharacterData(element, LINK));
+				fillLink(element, feedMessage);
 				feedMessage.setDescription(getCharacterData(element, DESCRIPTION));
 				feedMessage.setGuid(getCharacterData(element, GUID));
 
 				// Get publication date
-				DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss +0000", Locale.ENGLISH);
+				DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss", Locale.ENGLISH);
 				try {
-					feedMessage.setPubDate(format.parse(getCharacterData(element, PUB_DATE)));
+					fillPubblicationDate(element, feedMessage, format);
+
+					// Add only if the publication date exists
+					feed.add(feedMessage);
 				} catch (ParseException e) {
 					LOGGER.error("Impossible to parse the publication date", e);
 				}
-
-				LOGGER.debug(new StringBuilder("DATE: ").append(feedMessage.getPubDate()).append(", TITLE: ")
-						.append(feedMessage.getTitle()).toString());
-
-				feed.add(feedMessage);
 			}
 		}
 	}
 
-	private String getCharacterData(Element element, String tagName) {
-		return element.getElementsByTagName(tagName).item(0).getFirstChild().getNodeValue();
+	private void fillPubblicationDate(Element element, FeedMessage feedMessage, DateFormat format)
+			throws ParseException {
+		String contentDate = getCharacterData(element, PUB_DATE);
+		if (contentDate != null && !contentDate.isEmpty()) {
+			feedMessage.setPubDate(format.parse(getCharacterData(element, PUB_DATE)));
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("DATE: " + feedMessage.getPubDate() + ", TITLE: " + feedMessage.getTitle());
+			}
+		}
 	}
 
-	private InputStream read() throws IOException {
-		return url.openStream();
+	private void fillLink(Element element, FeedMessage feedMessage) {
+		String contentLink = getCharacterData(element, LINK);
+		String url = "";
+		if (contentLink.contains("google")) {
+			String[] splitlink = contentLink.split("url=");
+			if (splitlink.length > 1) {
+				if (splitlink[1].contains("&")) {
+					url = splitlink[1].substring(0, splitlink[1].indexOf('&'));
+				} else {
+					url = splitlink[1];
+				}
+			}
+		}
+		feedMessage.setLink(url);
+	}
+
+	private String getCharacterData(Element element, String tagName) {
+		try {
+			return element.getElementsByTagName(tagName).item(0).getFirstChild().getNodeValue();
+		} catch (NullPointerException ne) {
+			LOGGER.debug(new StringBuilder(tagName).append(" doesn't exist"), ne);
+			return "";
+		}
+	}
+
+	private InputStream openStream(URL url) throws IOException {
+		if ("https".equalsIgnoreCase(url.getProtocol())) {
+			HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+			return con.getInputStream();
+		} else {
+			return url.openStream();
+		}
 	}
 }

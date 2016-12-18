@@ -1,5 +1,7 @@
 package com.frascu.bot.newsbot.schedule;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -29,9 +31,12 @@ public class NewsJob implements Job {
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		try {
+			// Sources
+			List<String> urls = Arrays.asList("http://www.comune.sannicandro.bari.it/index.php?format=feed&type=rss",
+					"https://news.google.com/news/section?q=sannicandro%20di%20bari&output=rss");
+
 			// Read RSS
-			RSSFeedParser parser = new RSSFeedParser(
-					"http://www.comune.sannicandro.bari.it/index.php?format=feed&type=rss");
+			RSSFeedParser parser = new RSSFeedParser(urls);
 
 			final Date day = new Date();
 			LOGGER.info("Day: " + day);
@@ -41,6 +46,11 @@ public class NewsJob implements Job {
 
 			LOGGER.info("Getting the last message to send...");
 			Optional<FeedMessage> optional = feed.stream().filter(n -> day.before(n.getPubDate())).findFirst();
+			// Optional<FeedMessage> optional = feed.stream().findFirst();
+
+			Collections.sort(feed, (FeedMessage f1, FeedMessage f2) -> f1.compareTo(f1));
+
+			feed.forEach(n -> System.out.println(n.getPubDate()));
 
 			if (optional.isPresent()) {
 				sendMessageToAllUsers(optional.get(), new NewsHandler());

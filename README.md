@@ -14,16 +14,17 @@ mvn install
 ```
 
 ### PostgreSQL configuration
-[...]
+[TO DO]
 
 ### Bot Configuration
+First of all you need a telegram bot you can create thanks to the great [BotFather](https://core.telegram.org/bots#3-how-do-i-create-a-bot).
 Create the file `config.properties` in the directory `target`.
 The file must have these properties:
-* `token`
-* `admin`
-* `name`
+* `token`: it is given by the BotFather
+* `admin`: the chat id of admin that will manage the bot
+* `name`: the bot's name created
 
-### Execution
+### Run
 Now, you can execute the file jar generated in the directory `target`.
 ```sh
 cd target

@@ -18,6 +18,7 @@ mvn install
 
 ### Bot Configuration
 First of all you need a telegram bot you can create thanks to the great [BotFather](https://core.telegram.org/bots#3-how-do-i-create-a-bot).
+
 Create the file `config.properties` in the directory `target`.
 The file must have these properties:
 * `token`: it is given by the BotFather

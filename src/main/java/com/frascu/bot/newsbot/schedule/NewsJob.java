@@ -44,7 +44,10 @@ public class NewsJob implements Job {
 
 			LOGGER.info("Reading the rss...");
 			List<FeedMessage> feed = parser.readFeed();
-			// Collections.sort(feed, (f1, f2) -> f1.compareTo(f2));
+//			Collections.sort(feed, (f1, f2) -> f1.compareTo(f2));
+//			for (FeedMessage feedMessage : feed) {
+//				System.out.println(feedMessage.getPubDate());
+//			}
 
 			LOGGER.info("Finding news between " + lastDateChecked + " and " + day);
 			List<FeedMessage> filteredFeed = feed.stream()
@@ -58,8 +61,8 @@ public class NewsJob implements Job {
 			} else {
 				LOGGER.info("There are no messages to send.");
 			}
-			
-			//Update the last date checked
+
+			// Update the last date checked
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(day);
 			calendar.add(Calendar.SECOND, 1);
@@ -77,7 +80,11 @@ public class NewsJob implements Job {
 			LOGGER.debug("Sending the message...");
 			SendMessage message = new SendMessage();
 			message.setChatId(userId.toString());
-			message.setText(lastMessageToSend.getLink());
+			if (lastMessageToSend.getLink() != null && !lastMessageToSend.getLink().isEmpty()){
+				message.setText(lastMessageToSend.getLink());
+			}else{
+				message.setText(lastMessageToSend.getGuid());
+			}
 			try {
 				bot.sendMessage(message);
 				LOGGER.info("Message sent.");

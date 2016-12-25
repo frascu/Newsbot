@@ -70,15 +70,6 @@ public class FeedMessage implements Comparable<FeedMessage> {
 	}
 
 	@Override
-	public int compareTo(FeedMessage o) {
-		if (o.getPubDate().before(this.getPubDate())) {
-			return 0;
-		} else {
-			return 1;
-		}
-	}
-
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -131,6 +122,11 @@ public class FeedMessage implements Comparable<FeedMessage> {
 		} else if (!title.equals(other.title))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(FeedMessage o) {
+		return o.getPubDate().compareTo(this.getPubDate());
 	}
 
 }

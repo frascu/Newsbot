@@ -1,10 +1,10 @@
 package com.frascu.bot.newsbot.schedule;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.quartz.Job;
@@ -23,6 +23,7 @@ public class NewsJob implements Job {
 	private static final Logger LOGGER = Logger.getLogger(NewsJob.class);
 
 	private UserDao userDao = UserDao.getInstance();
+	private static Date lastDateChecked = new Date();
 
 	public NewsJob() {
 		super();
@@ -43,20 +44,26 @@ public class NewsJob implements Job {
 
 			LOGGER.info("Reading the rss...");
 			List<FeedMessage> feed = parser.readFeed();
+			// Collections.sort(feed, (f1, f2) -> f1.compareTo(f2));
 
-			LOGGER.info("Getting the last message to send...");
-			Optional<FeedMessage> optional = feed.stream().filter(n -> day.before(n.getPubDate())).findFirst();
-			// Optional<FeedMessage> optional = feed.stream().findFirst();
+			LOGGER.info("Finding news between " + lastDateChecked + " and " + day);
+			List<FeedMessage> filteredFeed = feed.stream()
+					.filter(n -> n.getPubDate().after(lastDateChecked) && n.getPubDate().before(day))
+					.collect(Collectors.toList());
 
-			Collections.sort(feed, (FeedMessage f1, FeedMessage f2) -> f1.compareTo(f1));
-
-			feed.forEach(n -> System.out.println(n.getPubDate()));
-
-			if (optional.isPresent()) {
-				sendMessageToAllUsers(optional.get(), new NewsHandler());
+			if (filteredFeed != null && !filteredFeed.isEmpty()) {
+				for (FeedMessage feedMessage : filteredFeed) {
+					sendMessageToAllUsers(feedMessage, new NewsHandler());
+				}
 			} else {
 				LOGGER.info("There are no messages to send.");
 			}
+			
+			//Update the last date checked
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(day);
+			calendar.add(Calendar.SECOND, 1);
+			lastDateChecked = calendar.getTime();
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}

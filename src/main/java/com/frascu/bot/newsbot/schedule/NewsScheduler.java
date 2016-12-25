@@ -22,6 +22,8 @@ public class NewsScheduler {
 	// Unique instance
 	private static NewsScheduler newsScheduler = new NewsScheduler();
 
+	private static final int INTERVAL_SECONDS = 60;
+	
 	// The quartz scheduler
 	private Scheduler schedulerQuartz;
 
@@ -50,7 +52,7 @@ public class NewsScheduler {
 
 			LOGGER.debug("Trigger the job to run now and repeat every 30 seconds");
 			Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger1", "group1").startNow()
-					.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(120).repeatForever())
+					.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(INTERVAL_SECONDS).repeatForever())
 					.build();
 
 			LOGGER.debug("Creating and starting the scheduler");

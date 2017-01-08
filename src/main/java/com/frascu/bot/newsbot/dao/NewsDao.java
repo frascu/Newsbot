@@ -36,12 +36,8 @@ public class NewsDao extends DaoBase {
 			beginTransaction();
 			List<NewsDto> dtos = feeds.stream().map(feed -> {
 				if (!isAlreadyCreated(feed.getLink())) {
-					long id = createNews(feed);
-					NewsDto dto = new NewsDto();
-					dto.setId(id);
-					dto.setLink(feed.getLink());
-					dto.setTitle(feed.getTitle());
-					return dto;
+					News news = createNews(feed);
+					return new NewsDto(news.getId(), news.getLink(), news.getTitle());
 				} else {
 					return null;
 				}
@@ -54,7 +50,7 @@ public class NewsDao extends DaoBase {
 		}
 	}
 
-	private long createNews(FeedMessage feedMessage) {
+	private News createNews(FeedMessage feedMessage) {
 		News news = new News();
 		news.setLink(feedMessage.getLink());
 		news.setTitle(feedMessage.getTitle());
@@ -62,7 +58,7 @@ public class NewsDao extends DaoBase {
 		news.setCreationDate(new Date());
 		em.persist(news);
 		em.flush();
-		return news.getId();
+		return news;
 	}
 
 	private boolean isAlreadyCreated(String link) {

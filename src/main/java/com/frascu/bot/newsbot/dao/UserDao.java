@@ -17,8 +17,8 @@ public class UserDao extends DaoBase {
 	private static final String QUERY_GET_ALL_USERS = new StringBuilder("select user from ")
 			.append(User.class.getCanonicalName()).append(" user order by registered, firstName, lastName").toString();
 
-	private static final String QUERY_GET_USER_IDS_REGISTERED = new StringBuilder("select user from ")
-			.append(User.class.getCanonicalName()).append(" user order by registered, firstName, lastName").toString();
+	private static final String QUERY_GET_USER_IDS_REGISTERED = new StringBuilder("select user.id from ")
+			.append(User.class.getCanonicalName()).append(" user where registered = :registered").toString();
 
 	private UserDao() {
 		super();

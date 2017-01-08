@@ -10,6 +10,13 @@ public class NewsDto {
 		super();
 	}
 
+	public NewsDto(Long id, String link, String title) {
+		super();
+		this.id = id;
+		this.link = link;
+		this.title = title;
+	}
+
 	public Long getId() {
 		return id;
 	}

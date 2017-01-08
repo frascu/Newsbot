@@ -80,9 +80,13 @@ public class RSSFeedParser {
 				FeedMessage feedMessage = new FeedMessage();
 				feedMessage.setTitle(getCharacterData(element, TITLE));
 				feedMessage.setAuthor(getCharacterData(element, AUTHOR));
-				fillLink(element, feedMessage);
+				String link = getLink(element, feedMessage);
+				if (link != null && !link.isEmpty()) {
+					feedMessage.setLink(link);
+				} else {
+					feedMessage.setLink(getCharacterData(element, GUID));
+				}
 				feedMessage.setDescription(getCharacterData(element, DESCRIPTION));
-				feedMessage.setGuid(getCharacterData(element, GUID));
 
 				// Get publication date
 				DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss", Locale.ENGLISH);
@@ -109,7 +113,7 @@ public class RSSFeedParser {
 		}
 	}
 
-	private void fillLink(Element element, FeedMessage feedMessage) {
+	private String getLink(Element element, FeedMessage feedMessage) {
 		String contentLink = getCharacterData(element, LINK);
 		String url = "";
 		if (contentLink.contains("google")) {
@@ -122,7 +126,7 @@ public class RSSFeedParser {
 				}
 			}
 		}
-		feedMessage.setLink(url);
+		return url;
 	}
 
 	private String getCharacterData(Element element, String tagName) {

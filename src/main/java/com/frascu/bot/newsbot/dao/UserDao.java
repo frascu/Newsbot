@@ -14,6 +14,12 @@ public class UserDao extends DaoBase {
 
 	private static UserDao instance = new UserDao();
 
+	private static final String QUERY_GET_ALL_USERS = new StringBuilder("select user from ")
+			.append(User.class.getCanonicalName()).append(" user order by registered, firstName, lastName").toString();
+
+	private static final String QUERY_GET_USER_IDS_REGISTERED = new StringBuilder("select user from ")
+			.append(User.class.getCanonicalName()).append(" user order by registered, firstName, lastName").toString();
+
 	private UserDao() {
 		super();
 	}
@@ -73,16 +79,12 @@ public class UserDao extends DaoBase {
 	}
 
 	public List<Long> getUserIdsRegistered() {
-		String query = new StringBuilder("select id from ").append(User.class.getCanonicalName())
-				.append(" where registered = :registered").toString();
-		return em.createQuery(query, Long.class).setParameter("registered", true).getResultList();
+		return em.createQuery(QUERY_GET_USER_IDS_REGISTERED, Long.class).setParameter("registered", true)
+				.getResultList();
 	}
 
 	public List<UserDto> getAllUsers() {
-		String query = new StringBuilder("select user from ").append(User.class.getCanonicalName())
-				.append(" user order by registered, firstName, lastName").toString();
-		List<User> users = em.createQuery(query, User.class).getResultList();
-
+		List<User> users = em.createQuery(QUERY_GET_ALL_USERS, User.class).getResultList();
 		return users.stream().map(entity -> new UserDto(entity.getUserName(), entity.getFirstName(),
 				entity.getLastName(), entity.isRegistered())).collect(Collectors.toList());
 	}

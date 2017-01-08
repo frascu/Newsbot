@@ -8,6 +8,8 @@ http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
 	<persistence-unit name="newsbotdb" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<class>com.frascu.bot.newsbot.model.User</class>
+		<class>com.frascu.bot.newsbot.model.News</class>
+		<class>com.frascu.bot.newsbot.model.YesNoConverterToBoolean</class>
 		<properties>
 
 			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/newsbotdb" />

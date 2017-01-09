@@ -20,6 +20,8 @@ public class NewsJob implements Job {
 
 	private NewsDao newsDao = NewsDao.getInstance();
 
+	private static boolean isFirstRun = true;
+
 	public NewsJob() {
 		super();
 	}
@@ -36,12 +38,19 @@ public class NewsJob implements Job {
 
 			List<NewsDto> newsDtos = newsDao.saveNewsFromFeeds(feed);
 
-			new NewsHandler().sendMessageToAllUsers(newsDtos);
-			newsDao.setNewsAsSent(newsDtos);
+			if (!isFirstRun) {
+				new NewsHandler().sendMessageToAllUsers(newsDtos);
+				newsDao.setNewsAsSent(newsDtos);
+				setFirstRun(false);
+			}
 
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
+	}
+
+	public static void setFirstRun(boolean isFirstRun) {
+		NewsJob.isFirstRun = isFirstRun;
 	}
 
 }

@@ -80,12 +80,7 @@ public class RSSFeedParser {
 				FeedMessage feedMessage = new FeedMessage();
 				feedMessage.setTitle(getCharacterData(element, TITLE));
 				feedMessage.setAuthor(getCharacterData(element, AUTHOR));
-				String link = getLink(element, feedMessage);
-				if (link != null && !link.isEmpty()) {
-					feedMessage.setLink(link);
-				} else {
-					feedMessage.setLink(getCharacterData(element, GUID));
-				}
+				feedMessage.setLink(getLink(element));
 				feedMessage.setDescription(getCharacterData(element, DESCRIPTION));
 
 				// Get publication date
@@ -113,17 +108,18 @@ public class RSSFeedParser {
 		}
 	}
 
-	private String getLink(Element element, FeedMessage feedMessage) {
-		String contentLink = getCharacterData(element, LINK);
-		String url = "";
-		if (contentLink.contains("google")) {
-			String[] splitlink = contentLink.split("url=");
+	private String getLink(Element element) {
+		String url = getCharacterData(element, LINK);
+
+		if (url == null || url.isEmpty()) {
+			return getCharacterData(element, GUID);
+		}
+
+		String contentLink = getCharacterData(element, GUID);
+		if (contentLink != null && contentLink.contains("google")) {
+			String[] splitlink = contentLink.split("cluster=");
 			if (splitlink.length > 1) {
-				if (splitlink[1].contains("&")) {
-					url = splitlink[1].substring(0, splitlink[1].indexOf('&'));
-				} else {
-					url = splitlink[1];
-				}
+				return splitlink[1].substring(0);
 			}
 		}
 		return url;

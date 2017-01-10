@@ -48,8 +48,9 @@ public class NewsHandler extends TelegramLongPollingBot {
 					// Send Message
 					LOGGER.debug("Sending the message...");
 					SendMessage message = new SendMessage();
+					message.enableHtml(true);
 					message.setChatId(userId.toString());
-					message.setText(news.getLink());
+					message.setText(new StringBuilder("<b>").append(news.getTitle()).append("</b>\n").append(news.getLink()).toString());
 					try {
 						sendMessage(message);
 						LOGGER.info("Message sent.");

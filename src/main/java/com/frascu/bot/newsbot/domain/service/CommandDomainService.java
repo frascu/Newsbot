@@ -25,14 +25,13 @@ public class CommandDomainService {
 
 	public String start(User user) {
 		StringBuilder messageBuilder = new StringBuilder();
-		String userName = user.getFirstName() + " " + user.getLastName();
 
 		if (userDao.isRegistered(user.getId())) {
-			messageBuilder.append("Ciao ").append(userName).append("\n");
+			messageBuilder.append("Ciao ").append(user.getFirstName()).append("\n");
 			messageBuilder.append("sei già iscritto.");
 		} else {
 			userDao.registerUser(user.getId(), user.getUserName(), user.getFirstName(), user.getLastName());
-			messageBuilder.append("Benvenuto ").append(userName).append("\n");
+			messageBuilder.append("Benvenuto ").append(user.getFirstName()).append("\n");
 			messageBuilder.append("questo bot ti aggiornera' sulle ultime notizie di Sannicandro di Bari.");
 		}
 		return messageBuilder.toString();
@@ -41,14 +40,12 @@ public class CommandDomainService {
 	public String stop(User user) {
 		StringBuilder messageBuilder = new StringBuilder();
 
-		String userName = user.getFirstName() + " " + user.getLastName();
-
 		if (!userDao.isRegistered(user.getId())) {
-			messageBuilder.append("Ciao ").append(userName).append("\n");
+			messageBuilder.append("Ciao ").append(user.getFirstName()).append("\n");
 			messageBuilder.append("hai gia' cancellato l'scrizione.");
 		} else {
 			userDao.unRegisterUser(user.getId());
-			messageBuilder.append("Ciao ").append(userName).append("\n");
+			messageBuilder.append("Ciao ").append(user.getFirstName()).append("\n");
 			messageBuilder.append("ci mancherai.");
 		}
 		return messageBuilder.toString();

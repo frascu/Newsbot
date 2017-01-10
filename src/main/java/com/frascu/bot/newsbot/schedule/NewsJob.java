@@ -41,6 +41,7 @@ public class NewsJob implements Job {
 			if (!isFirstRun) {
 				new NewsHandler().sendMessageToAllUsers(newsDtos);
 				newsDao.setNewsAsSent(newsDtos);
+			} else {
 				setFirstRun(false);
 			}
 

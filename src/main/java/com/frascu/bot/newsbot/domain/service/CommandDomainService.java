@@ -7,6 +7,7 @@ import org.telegram.telegrambots.api.objects.User;
 import com.frascu.bot.newsbot.dao.UserDao;
 import com.frascu.bot.newsbot.dto.CommandDto;
 import com.frascu.bot.newsbot.dto.UserDto;
+import com.frascu.bot.newsbot.telegram.Emoji;
 
 public class CommandDomainService {
 
@@ -84,10 +85,9 @@ public class CommandDomainService {
 			messageBuilder.append("<b>Utenti:</b>\n");
 			for (UserDto user : users) {
 				messageBuilder//
+						.append(user.isRegistered() ? Emoji.VICTORY_HAND : Emoji.CRYING_FACE).append(" - ")//
+						.append(user.getUserId()).append(" - ")//
 						.append(user.getFirstName()).append(" ")//
-						.append(user.getLastName()).append(" - ")//
-						.append(user.getUserName()).append(" - ")//
-						.append(user.isRegistered() ? "iscritto" : "non iscritto")//
 						.append("\n");
 			}
 		}

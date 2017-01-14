@@ -36,7 +36,7 @@ public class NewsHandler extends TelegramLongPollingBot {
 		return BotConfig.TOKEN;
 	}
 
-	public String getAdmin() {
+	public Long getAdmin() {
 		return BotConfig.ADMIN;
 	}
 

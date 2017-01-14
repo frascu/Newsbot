@@ -22,7 +22,7 @@ public class AdminCommand extends NewsBotCommand {
 	@Override
 	public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
 
-		if (new Long(BotConfig.ADMIN).equals(chat.getId())) {
+		if (BotConfig.ADMIN.equals(chat.getId())) {
 			String message = commandDomainService.admin(strings);
 
 			SendMessage answer = new SendMessage();

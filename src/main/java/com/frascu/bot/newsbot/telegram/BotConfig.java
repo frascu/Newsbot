@@ -30,7 +30,7 @@ public class BotConfig {
 	}
 
 	public static final String TOKEN = prop.getProperty("token");
-	public static final String ADMIN = prop.getProperty("admin");
+	public static final Long ADMIN = Long.valueOf(prop.getProperty("admin"));
 	public static final String NAME = prop.getProperty("name");
 
 	private static final List<String> SOURCES = Arrays.asList(prop.getProperty("sources").split(";"));

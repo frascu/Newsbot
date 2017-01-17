@@ -21,9 +21,15 @@ public class StartCommand extends NewsBotCommand {
 	@Override
 	public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
 
-		String message = commandDomainService.start(user);
+		String message;
+		if (chat.isGroupChat()) {
+			message = commandDomainService.startGroup(chat);
+		} else {
+			message = commandDomainService.startUser(user);
+		}
+
 		SendMessage answer = new SendMessage();
-		answer.setChatId(chat.getId().toString());
+		answer.setChatId(String.valueOf(chat.getId()));
 		answer.setText(message);
 
 		try {

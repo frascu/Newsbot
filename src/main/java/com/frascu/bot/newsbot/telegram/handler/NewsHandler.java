@@ -8,6 +8,7 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
+import com.frascu.bot.newsbot.dao.GroupDao;
 import com.frascu.bot.newsbot.dao.UserDao;
 import com.frascu.bot.newsbot.dto.NewsDto;
 import com.frascu.bot.newsbot.telegram.BotConfig;
@@ -16,6 +17,7 @@ public class NewsHandler extends TelegramLongPollingBot {
 
 	private static final Logger LOGGER = Logger.getLogger(NewsHandler.class);
 	private UserDao userDao = UserDao.getInstance();
+	private GroupDao groupDao = GroupDao.getInstance();
 
 	public NewsHandler() {
 		super();
@@ -43,25 +45,34 @@ public class NewsHandler extends TelegramLongPollingBot {
 	public void sendMessageToAllUsers(List<NewsDto> newsToSend) {
 		if (newsToSend != null && !newsToSend.isEmpty()) {
 			List<Long> userIds = userDao.getUserIdsRegistered();
+			List<Long> groupIds = groupDao.getGroupIdsRegistered();
 			for (NewsDto news : newsToSend) {
 				for (Long userId : userIds) {
-					// Send Message
-					LOGGER.debug("Sending the message...");
-					SendMessage message = new SendMessage();
-					message.enableHtml(true);
-					message.setChatId(userId.toString());
-					message.setText(new StringBuilder("<b>").append(news.getTitle()).append("</b>\n").append(news.getLink()).toString());
-					try {
-						sendMessage(message);
-						LOGGER.info("Message sent.");
-					} catch (TelegramApiException e) {
-						LOGGER.error("Impossible to send the message.", e);
-					}
+					sendNewsToChat(news, userId);
+				}
+				for (Long groupId : groupIds) {
+					sendNewsToChat(news, groupId);
 				}
 			}
+
 		} else {
 			LOGGER.info("There are no messages to send.");
 		}
+	}
 
+	private void sendNewsToChat(NewsDto news, Long chatId) {
+		// Send Message
+		LOGGER.debug("Sending the message...");
+		SendMessage message = new SendMessage();
+		message.enableHtml(true);
+		message.setChatId(String.valueOf(chatId));
+		message.setText(
+				new StringBuilder("<b>").append(news.getTitle()).append("</b>\n").append(news.getLink()).toString());
+		try {
+			sendMessage(message);
+			LOGGER.info("Message sent.");
+		} catch (TelegramApiException e) {
+			LOGGER.error("Impossible to send the message.", e);
+		}
 	}
 }

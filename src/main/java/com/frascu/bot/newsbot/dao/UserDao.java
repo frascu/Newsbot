@@ -47,10 +47,8 @@ public class UserDao extends DaoBase {
 
 			commitTransaction();
 
-		} catch (
-
-		Exception e) {
-			LOGGER.error("Impossible to create the user", e);
+		} catch (Exception e) {
+			LOGGER.error("Impossible to register the user", e);
 			rollbackTransaction();
 		}
 	}
@@ -64,7 +62,7 @@ public class UserDao extends DaoBase {
 				commitTransaction();
 			}
 		} catch (Exception e) {
-			LOGGER.error("Impossible to create the user", e);
+			LOGGER.error("Impossible to unregister the user", e);
 			rollbackTransaction();
 		}
 	}

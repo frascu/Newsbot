@@ -21,7 +21,13 @@ public class StopCommand extends NewsBotCommand {
 	@Override
 	public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
 
-		String message = commandDomainService.stop(user);
+		String message;
+		if (chat.isGroupChat()) {
+			message = commandDomainService.stopGroup(chat);
+		} else {
+			message = commandDomainService.stopUser(user);
+		}
+		
 		SendMessage answer = new SendMessage();
 		answer.setChatId(chat.getId().toString());
 		answer.setText(message);

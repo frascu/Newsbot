@@ -43,7 +43,7 @@ public class HelpCommand extends NewsBotCommand {
 	public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
 
 		SendMessage helpMessage = new SendMessage();
-		helpMessage.setChatId(chat.getId().toString());
+		helpMessage.setChatId(String.valueOf(chat.getId()));
 		helpMessage.enableHtml(true);
 
 		if (BotConfig.ADMIN.equals(chat.getId())) {

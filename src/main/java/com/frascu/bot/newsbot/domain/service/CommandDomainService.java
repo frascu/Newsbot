@@ -2,8 +2,10 @@ package com.frascu.bot.newsbot.domain.service;
 
 import java.util.List;
 
+import org.telegram.telegrambots.api.objects.Chat;
 import org.telegram.telegrambots.api.objects.User;
 
+import com.frascu.bot.newsbot.dao.GroupDao;
 import com.frascu.bot.newsbot.dao.UserDao;
 import com.frascu.bot.newsbot.dto.CommandDto;
 import com.frascu.bot.newsbot.dto.UserDto;
@@ -15,6 +17,7 @@ public class CommandDomainService {
 	private static final String CIAO = "Ciao ";
 	private static CommandDomainService instance = new CommandDomainService();
 	private UserDao userDao = UserDao.getInstance();
+	private GroupDao groupDao = GroupDao.getInstance();
 
 	private static final String COMMAND_NOT_EXISTING = "Il comando selezionato non esiste";
 
@@ -26,7 +29,7 @@ public class CommandDomainService {
 		return instance;
 	}
 
-	public String start(User user) {
+	public String startUser(User user) {
 		StringBuilder messageBuilder = new StringBuilder();
 
 		if (userDao.isRegistered(user.getId())) {
@@ -40,7 +43,7 @@ public class CommandDomainService {
 		return messageBuilder.toString();
 	}
 
-	public String stop(User user) {
+	public String stopUser(User user) {
 		StringBuilder messageBuilder = new StringBuilder();
 
 		if (!userDao.isRegistered(user.getId())) {
@@ -93,6 +96,33 @@ public class CommandDomainService {
 						.append("\n");
 			}
 		}
+	}
+
+	public String startGroup(Chat chat) {
+		StringBuilder messageBuilder = new StringBuilder();
+
+		if (groupDao.isRegistered(chat.getId())) {
+			messageBuilder.append("Ciao \"").append(chat.getTitle()).append("\"\n");
+			messageBuilder.append("siete già iscritti alle notizie.");
+		} else {
+			groupDao.registerGroup(chat.getId());
+			messageBuilder.append("Ciao \"").append(chat.getTitle()).append("\"\n");
+			messageBuilder.append("questo bot vi aggiornera' sulle ultime notizie di Sannicandro di Bari.");
+		}
+		return messageBuilder.toString();
+
+	}
+
+	public String stopGroup(Chat chat) {
+		StringBuilder messageBuilder = new StringBuilder();
+
+		if (!groupDao.isRegistered(chat.getId())) {
+			messageBuilder.append("Ciao a tutti,\navete già cancellato l'iscrizione.");
+		} else {
+			groupDao.unRegisterGroup(chat.getId());
+			messageBuilder.append("Ciao a tutti,\nmi mancherete.");
+		}
+		return messageBuilder.toString();
 	}
 
 }

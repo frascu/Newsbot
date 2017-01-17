@@ -2,7 +2,6 @@ package com.frascu.bot.newsbot.telegram.handler;
 
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
-import org.telegram.telegrambots.api.objects.Contact;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingCommandBot;
@@ -23,7 +22,6 @@ public class CommandsHandler extends TelegramLongPollingCommandBot {
 	 * Constructor.
 	 */
 	public CommandsHandler() {
-		// register(new HelloCommand());
 		register(new StartCommand());
 		register(new StopCommand());
 		register(new AdminCommand());
@@ -70,11 +68,10 @@ public class CommandsHandler extends TelegramLongPollingCommandBot {
 		// Initialization
 		SendMessage echoMessage = new SendMessage();
 		StringBuilder messageBuilder = new StringBuilder();
-		Contact contact = message.getContact();
 
 		// Build the message
-		messageBuilder.append("Nome: ").append(contact.getFirstName()).append("\n");
-		messageBuilder.append("Id: ").append(contact.getUserID()).append("\n");
+		messageBuilder.append("Nome: ").append(message.getChat().getFirstName()).append("\n");
+		messageBuilder.append("Id: ").append(message.getChatId()).append("\n");
 		messageBuilder.append("Messaggio: ").append(message.getText()).append("\n");
 
 		// Set the SendMessage

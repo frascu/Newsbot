@@ -11,6 +11,8 @@ import com.frascu.bot.newsbot.telegram.Emoji;
 
 public class CommandDomainService {
 
+	private static final String USERS = "users";
+	private static final String CIAO = "Ciao ";
 	private static CommandDomainService instance = new CommandDomainService();
 	private UserDao userDao = UserDao.getInstance();
 
@@ -28,7 +30,7 @@ public class CommandDomainService {
 		StringBuilder messageBuilder = new StringBuilder();
 
 		if (userDao.isRegistered(user.getId())) {
-			messageBuilder.append("Ciao ").append(user.getFirstName()).append("\n");
+			messageBuilder.append(CIAO).append(user.getFirstName()).append("\n");
 			messageBuilder.append("sei già iscritto.");
 		} else {
 			userDao.registerUser(user.getId(), user.getUserName(), user.getFirstName(), user.getLastName());
@@ -42,11 +44,11 @@ public class CommandDomainService {
 		StringBuilder messageBuilder = new StringBuilder();
 
 		if (!userDao.isRegistered(user.getId())) {
-			messageBuilder.append("Ciao ").append(user.getFirstName()).append("\n");
+			messageBuilder.append(CIAO).append(user.getFirstName()).append("\n");
 			messageBuilder.append("hai gia' cancellato l'scrizione.");
 		} else {
 			userDao.unRegisterUser(user.getId());
-			messageBuilder.append("Ciao ").append(user.getFirstName()).append("\n");
+			messageBuilder.append(CIAO).append(user.getFirstName()).append("\n");
 			messageBuilder.append("ci mancherai.");
 		}
 		return messageBuilder.toString();
@@ -69,7 +71,7 @@ public class CommandDomainService {
 
 		if (strings != null && strings.length > 0) {
 
-			if (strings[0].equals("users")) {
+			if (strings[0].equals(USERS)) {
 				getMessageWithAllUsers(messageBuilder, userDao.getAllUsers());
 			} else {
 				messageBuilder.append(COMMAND_NOT_EXISTING);

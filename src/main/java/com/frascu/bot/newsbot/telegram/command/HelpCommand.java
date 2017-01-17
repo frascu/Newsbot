@@ -11,7 +11,6 @@ import org.telegram.telegrambots.bots.commands.ICommandRegistry;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.logging.BotLogger;
 
-import com.frascu.bot.newsbot.domain.service.CommandDomainService;
 import com.frascu.bot.newsbot.dto.CommandDto;
 import com.frascu.bot.newsbot.telegram.BotConfig;
 import com.frascu.bot.newsbot.telegram.custom.NewsBotCommand;
@@ -36,18 +35,18 @@ public class HelpCommand extends NewsBotCommand {
 				.map(command -> new CommandDto(command.getCommandIdentifier(), command.getDescription()))
 				.collect(Collectors.toList());
 		commands.add(new CommandDto(this.getCommandIdentifier(), this.getDescription()));
-		message = CommandDomainService.getInstance().help(commands, false);
-		messageAdmin = CommandDomainService.getInstance().help(commands, true);
+		message = commandDomainService.help(commands, false);
+		messageAdmin = commandDomainService.help(commands, true);
 	}
 
 	@Override
 	public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-		
+
 		SendMessage helpMessage = new SendMessage();
 		helpMessage.setChatId(chat.getId().toString());
 		helpMessage.enableHtml(true);
 
-		if (new Long(BotConfig.ADMIN).equals(chat.getId())) {
+		if (BotConfig.ADMIN.equals(chat.getId())) {
 			helpMessage.setText(messageAdmin);
 		} else {
 			helpMessage.setText(message);

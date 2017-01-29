@@ -16,8 +16,6 @@ public class CommandDomainService {
 	private static final String USERS = "users";
 	private static final String CIAO = "Ciao ";
 	private static CommandDomainService instance = new CommandDomainService();
-	private UserDao userDao = UserDao.getInstance();
-	private GroupDao groupDao = GroupDao.getInstance();
 
 	private static final String COMMAND_NOT_EXISTING = "Il comando selezionato non esiste";
 
@@ -30,6 +28,7 @@ public class CommandDomainService {
 	}
 
 	public String startUser(User user) {
+		UserDao userDao = new UserDao();
 		StringBuilder messageBuilder = new StringBuilder();
 
 		if (userDao.isRegistered(user.getId())) {
@@ -44,6 +43,7 @@ public class CommandDomainService {
 	}
 
 	public String stopUser(User user) {
+		UserDao userDao = new UserDao();
 		StringBuilder messageBuilder = new StringBuilder();
 
 		if (!userDao.isRegistered(user.getId())) {
@@ -69,7 +69,7 @@ public class CommandDomainService {
 	}
 
 	public String admin(String[] strings) {
-
+		UserDao userDao = new UserDao();
 		StringBuilder messageBuilder = new StringBuilder();
 
 		if (strings != null && strings.length > 0) {
@@ -99,6 +99,7 @@ public class CommandDomainService {
 	}
 
 	public String startGroup(Chat chat) {
+		GroupDao groupDao = new GroupDao();
 		StringBuilder messageBuilder = new StringBuilder();
 
 		if (groupDao.isRegistered(chat.getId())) {
@@ -107,13 +108,14 @@ public class CommandDomainService {
 		} else {
 			groupDao.registerGroup(chat.getId());
 			messageBuilder.append("Ciao \"").append(chat.getTitle()).append("\"\n");
-			messageBuilder.append("questo bot vi aggiornera' sulle ultime notizie di Sannicandro di Bari.");
+			messageBuilder.append("questo bot vi aggiornerà sulle ultime notizie di Sannicandro di Bari.");
 		}
 		return messageBuilder.toString();
 
 	}
 
 	public String stopGroup(Chat chat) {
+		GroupDao groupDao = new GroupDao();
 		StringBuilder messageBuilder = new StringBuilder();
 
 		if (!groupDao.isRegistered(chat.getId())) {

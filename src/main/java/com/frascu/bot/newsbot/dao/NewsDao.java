@@ -20,9 +20,6 @@ public class NewsDao extends DaoBase {
 
 	private static NewsDao instance = new NewsDao();
 
-	private static final String QUERY_GET_COUNT_NEWS_BY_LINK = new StringBuilder("select count(news) from ")
-			.append(News.class.getCanonicalName()).append(" news where news.link = :link").toString();
-
 	private NewsDao() {
 		super();
 	}
@@ -63,7 +60,7 @@ public class NewsDao extends DaoBase {
 
 	private boolean isAlreadyCreated(String link) {
 		try {
-			return em.createQuery(QUERY_GET_COUNT_NEWS_BY_LINK, Long.class).setParameter("link", link)
+			return em.createQuery(QueryProvider.QUERY_GET_COUNT_NEWS_BY_LINK, Long.class).setParameter("link", link)
 					.getSingleResult() == 1;
 		} catch (NoResultException e) {
 			LOGGER.error("Impossible to get the count of the news by link", e);
@@ -81,4 +78,10 @@ public class NewsDao extends DaoBase {
 		});
 		commitTransaction();
 	}
+
+	public boolean areOtherNewsWithWordToday(String word, long idNews) {
+		return em.createQuery(QueryProvider.QUERY_COUNT_NEWS_BY_CREATION_DATE_AND_TITLE, Long.class)
+				.setParameter("word", "%" + word.toLowerCase() + "%").setParameter("id", idNews).getSingleResult() > 0;
+	}
+
 }

@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.4.10
 -- Dumped by pg_dump version 9.4.10
--- Started on 2017-01-17 20:54:35
+-- Started on 2017-01-23 20:23:07
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -93,7 +93,7 @@ CREATE TABLE news (
     link character varying(255),
     title character varying(255),
     pubblication_date date,
-    creation_date date,
+    creation_date timestamp without time zone,
     sent character varying
 );
 
@@ -164,7 +164,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2017-01-17 20:54:35
+-- Completed on 2017-01-23 20:23:07
 
 --
 -- PostgreSQL database dump complete

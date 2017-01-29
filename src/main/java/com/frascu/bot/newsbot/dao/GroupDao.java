@@ -9,16 +9,9 @@ import com.frascu.bot.newsbot.model.Group;
 public class GroupDao extends DaoBase {
 
 	private static final Logger LOGGER = Logger.getLogger(GroupDao.class);
-	private static GroupDao instance = new GroupDao();
-	private static final String QUERY_GET_GROUP_IDS_REGISTERED = new StringBuilder("select group.id from ")
-			.append(Group.class.getCanonicalName()).append(" group where registered = :registered").toString();
 
-	private GroupDao() {
+	public GroupDao() {
 		super();
-	}
-
-	public static GroupDao getInstance() {
-		return instance;
 	}
 
 	public void registerGroup(long id) {
@@ -68,7 +61,7 @@ public class GroupDao extends DaoBase {
 	}
 
 	public List<Long> getGroupIdsRegistered() {
-		return em.createQuery(QUERY_GET_GROUP_IDS_REGISTERED, Long.class).setParameter("registered", true)
+		return em.createQuery(QueryProvider.QUERY_GET_GROUP_IDS_REGISTERED, Long.class).setParameter("registered", true)
 				.getResultList();
 	}
 }

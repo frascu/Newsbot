@@ -2,6 +2,7 @@ package com.frascu.bot.newsbot.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 public class DaoBase {
@@ -10,20 +11,23 @@ public class DaoBase {
 
 	protected static EntityManager em = emfactory.createEntityManager();
 
+	private EntityTransaction entityTransaction;
+
 	public DaoBase() {
 		super();
 	}
 
 	protected void beginTransaction() {
-		em.getTransaction().begin();
+		entityTransaction = em.getTransaction();
+		entityTransaction.begin();
 	}
 
 	protected void commitTransaction() {
-		em.getTransaction().commit();
+		entityTransaction.commit();
 	}
 
 	protected void rollbackTransaction() {
-		em.getTransaction().rollback();
+		entityTransaction.rollback();
 	}
-	
+
 }

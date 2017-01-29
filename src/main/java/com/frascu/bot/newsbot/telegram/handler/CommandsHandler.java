@@ -16,6 +16,7 @@ import com.frascu.bot.newsbot.telegram.command.StopCommand;
 
 public class CommandsHandler extends TelegramLongPollingCommandBot {
 
+	private static final String IMPOSSIBLE_TO_SEND_THE_MESSAGE = "Impossible to send the message";
 	private static final Logger LOGGER = Logger.getLogger(CommandsHandler.class);
 
 	/**
@@ -36,7 +37,7 @@ public class CommandsHandler extends TelegramLongPollingCommandBot {
 			try {
 				absSender.sendMessage(commandUnknownMessage);
 			} catch (TelegramApiException e) {
-				LOGGER.error("Impossible to send the message", e);
+				LOGGER.error(IMPOSSIBLE_TO_SEND_THE_MESSAGE, e);
 			}
 			helpCommand.execute(absSender, message.getFrom(), message.getChat(), new String[] {});
 		});
@@ -66,7 +67,6 @@ public class CommandsHandler extends TelegramLongPollingCommandBot {
 	private void sendMessageFromUserToAdmin(Message message) {
 
 		// Initialization
-		SendMessage echoMessage = new SendMessage();
 		StringBuilder messageBuilder = new StringBuilder();
 
 		// Build the message
@@ -75,19 +75,18 @@ public class CommandsHandler extends TelegramLongPollingCommandBot {
 		messageBuilder.append("Messaggio: ").append(message.getText()).append("\n");
 
 		// Set the SendMessage
+		SendMessage echoMessage = new SendMessage();
 		echoMessage.setChatId(String.valueOf(BotConfig.ADMIN));
 		echoMessage.setText(messageBuilder.toString());
 
 		try {
 			sendMessage(echoMessage);
 		} catch (TelegramApiException e) {
-			LOGGER.error("Impossible to send the message", e);
+			LOGGER.error(IMPOSSIBLE_TO_SEND_THE_MESSAGE, e);
 		}
 	}
 
 	private void sendMessageFromAdminToUser(Message message) {
-
-		SendMessage echoMessage = new SendMessage();
 
 		// Split the message from the admin
 		String[] splitMessage = message.getText().split("/");
@@ -97,6 +96,7 @@ public class CommandsHandler extends TelegramLongPollingCommandBot {
 
 			String messageToSend = splitMessage[1];
 
+			SendMessage echoMessage = new SendMessage();
 			if (chatId != null && !chatId.isEmpty() && messageToSend != null && !messageToSend.isEmpty()) {
 				echoMessage.setChatId(chatId);
 				echoMessage.setText(messageToSend);
@@ -105,7 +105,7 @@ public class CommandsHandler extends TelegramLongPollingCommandBot {
 			try {
 				sendMessage(echoMessage);
 			} catch (TelegramApiException e) {
-				LOGGER.error("Impossible to send the message", e);
+				LOGGER.error(IMPOSSIBLE_TO_SEND_THE_MESSAGE, e);
 			}
 		}
 	}

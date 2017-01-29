@@ -12,20 +12,8 @@ public class UserDao extends DaoBase {
 
 	private static final Logger LOGGER = Logger.getLogger(UserDao.class);
 
-	private static UserDao instance = new UserDao();
-
-	private static final String QUERY_GET_ALL_USERS = new StringBuilder("select user from ")
-			.append(User.class.getCanonicalName()).append(" user order by registered desc, firstName, lastName").toString();
-
-	private static final String QUERY_GET_USER_IDS_REGISTERED = new StringBuilder("select user.id from ")
-			.append(User.class.getCanonicalName()).append(" user where registered = :registered").toString();
-
-	private UserDao() {
+	public UserDao() {
 		super();
-	}
-
-	public static UserDao getInstance() {
-		return instance;
 	}
 
 	public void registerUser(long userId, String userName, String firstName, String lastName) {
@@ -77,12 +65,12 @@ public class UserDao extends DaoBase {
 	}
 
 	public List<Long> getUserIdsRegistered() {
-		return em.createQuery(QUERY_GET_USER_IDS_REGISTERED, Long.class).setParameter("registered", true)
+		return em.createQuery(QueryProvider.QUERY_GET_USER_IDS_REGISTERED, Long.class).setParameter("registered", true)
 				.getResultList();
 	}
 
 	public List<UserDto> getAllUsers() {
-		List<User> users = em.createQuery(QUERY_GET_ALL_USERS, User.class).getResultList();
+		List<User> users = em.createQuery(QueryProvider.QUERY_GET_ALL_USERS, User.class).getResultList();
 		return users.stream().map(entity -> new UserDto(entity.getId(), entity.getUserName(), entity.getFirstName(),
 				entity.getLastName(), entity.isRegistered())).collect(Collectors.toList());
 	}

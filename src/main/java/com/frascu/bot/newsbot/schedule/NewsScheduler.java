@@ -10,6 +10,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
+import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
@@ -43,6 +44,7 @@ public class NewsScheduler {
 
 		// The job that answer to the user
 		try {
+			ApiContextInitializer.init();
 			TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
 			telegramBotsApi.registerBot(new CommandsHandler());
 		} catch (TelegramApiException e) {

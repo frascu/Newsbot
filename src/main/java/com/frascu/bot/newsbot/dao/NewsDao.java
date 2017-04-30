@@ -18,14 +18,8 @@ public class NewsDao extends DaoBase {
 
 	private static final Logger LOGGER = Logger.getLogger(NewsDao.class);
 
-	private static NewsDao instance = new NewsDao();
-
-	private NewsDao() {
+	public NewsDao() {
 		super();
-	}
-
-	public static NewsDao getInstance() {
-		return instance;
 	}
 
 	public List<NewsDto> saveNewsFromFeeds(List<FeedMessage> feeds) {

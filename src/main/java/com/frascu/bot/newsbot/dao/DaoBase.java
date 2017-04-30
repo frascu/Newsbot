@@ -7,7 +7,7 @@ import javax.persistence.Persistence;
 
 public class DaoBase {
 
-	private static EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("newsbotdb");
+	private static EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("newsbot");
 
 	protected static EntityManager em = emfactory.createEntityManager();
 

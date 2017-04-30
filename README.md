@@ -3,9 +3,9 @@ Newsbot
 It's a telegram bot to send the last news of some sources.
 
 Prerequisites:
-* [Java SE 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+* [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 * [Maven 3.3](http://maven.apache.org/install.html)
-* [PostgreSQL 9.4](https://www.postgresql.org/download/)
+* [MySQL](https://dev.mysql.com/downloads/)
 
 ### Installation
 1. Clone the repository
@@ -16,7 +16,7 @@ mvn install
 ```
 
 ### Usage
-1. PostgreSQL configuration
+1. MySQL configuration
 2. Bot Configuration
 3. Run the Newsbot
 ```sh
@@ -24,7 +24,7 @@ cd target
 java -jar newsbot-0.0.1-SNAPSHOT-jar-with-dependencies
 ```
 
-### PostgreSQL configuration
+### MySQL configuration
 [TO DO]
 
 ### Bot Configuration

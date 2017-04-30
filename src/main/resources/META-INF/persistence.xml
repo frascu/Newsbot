@@ -5,20 +5,19 @@
 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
 	version="2.1">
 
-	<persistence-unit name="newsbotdb" transaction-type="RESOURCE_LOCAL">
+	<persistence-unit name="newsbot" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<class>com.frascu.bot.newsbot.model.User</class>
 		<class>com.frascu.bot.newsbot.model.News</class>
 		<class>com.frascu.bot.newsbot.model.YesNoConverterToBoolean</class>
 		<class>com.frascu.bot.newsbot.model.Group</class>
 		<properties>
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/newsbot" />
+			<property name="javax.persistence.jdbc.user" value="root" />
+			<property name="javax.persistence.jdbc.password" value="root" />
+			<property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
 
-			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/newsbotdb" />
-			<property name="javax.persistence.jdbc.user" value="postgres" />
-			<property name="javax.persistence.jdbc.password" value="postgres" />
-			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
-
-			<property name="hibernate.default_schema" value="public"/>
+			<property name="hibernate.default_schema" value="newsbot"/>
 			
 			<!-- <property name="hibernate.show_sql" value="true" />-->
 			<property name="hibernate.format_sql" value="true" />

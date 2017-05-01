@@ -3,14 +3,10 @@ package com.frascu.bot.newsbot.dao;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
-
 import com.frascu.bot.newsbot.dto.UserDto;
 import com.frascu.bot.newsbot.model.User;
 
 public class UserDao extends DaoBase {
-
-	private static final Logger LOGGER = Logger.getLogger(UserDao.class);
 
 	public UserDao() {
 		super();

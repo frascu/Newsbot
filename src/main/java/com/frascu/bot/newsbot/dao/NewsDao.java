@@ -8,15 +8,11 @@ import java.util.stream.Collectors;
 
 import javax.persistence.NoResultException;
 
-import org.apache.log4j.Logger;
-
 import com.frascu.bot.newsbot.dto.NewsDto;
 import com.frascu.bot.newsbot.model.News;
 import com.frascu.bot.newsbot.rss.FeedMessage;
 
 public class NewsDao extends DaoBase {
-
-	private static final Logger LOGGER = Logger.getLogger(NewsDao.class);
 
 	public NewsDao() {
 		super();

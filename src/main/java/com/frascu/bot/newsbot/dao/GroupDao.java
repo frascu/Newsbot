@@ -2,13 +2,9 @@ package com.frascu.bot.newsbot.dao;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import com.frascu.bot.newsbot.model.Group;
 
 public class GroupDao extends DaoBase {
-
-	private static final Logger LOGGER = Logger.getLogger(GroupDao.class);
 
 	public GroupDao() {
 		super();

@@ -28,53 +28,47 @@ public class ScheduledTask extends TimerTask {
 	private static final int MIN_OF_N_WORDS_IN_TITLE = 5;
 	private static final int LENGHT_OF_WORD_TO_CHECK = 5;
 
-	private static boolean isFirstRun = true;
+	private NewsDao newsDao = new NewsDao();
+	private List<NewsDto> newsToSend = new ArrayList<>();
+	private List<NewsDto> newsSimilar = new ArrayList<>();
 
 	// Add your task here
 	public void run() {
 		try {
-			// Read RSS
-			RSSFeedParser parser = new RSSFeedParser(BotConfig.getSources());
+			retrieveNews();
 
-			LOGGER.info("Reading the rss...");
-			List<FeedMessage> feed = parser.readFeed();
-
-			NewsDao newsDao = new NewsDao();
-			List<NewsDto> newsDtos = newsDao.saveNewsFromFeeds(feed);
-
-			List<NewsDto> newsToSend = new ArrayList<>();
-			List<NewsDto> newsSimilar = new ArrayList<>();
-
-			for (NewsDto newsDto : newsDtos) {
-				String title = newsDto.getTitle().replaceAll(",", "");
-				String[] words = title.split(" ");
-				long numberOfWordsInOtherNewsToday = Arrays.asList(words).stream().filter(word -> {
-					String cleanWord = word.trim();
-					return cleanWord.length() > LENGHT_OF_WORD_TO_CHECK
-							&& newsDao.areOtherNewsWithWordToday(cleanWord, newsDto.getId());
-				}).count();
-				if (numberOfWordsInOtherNewsToday > MIN_OF_N_WORDS_IN_TITLE) {
-					newsSimilar.add(newsDto);
-				} else {
-					newsToSend.add(newsDto);
-				}
-			}
-
-			if (!isFirstRun) {
-				NewsHandler newsHandler = new NewsHandler();
-				// Send the news
-				newsHandler.sendNewsToAllUsers(newsToSend);
-				newsDao.setNewsAsSent(newsToSend);
-
-				// Send the similar news to the admin
-				newsHandler.sendNewsToAdmin(newsSimilar);
-
-			} else {
-				ScheduledTask.isFirstRun = false;
-			}
+			//Send news to users and to admin
+			NewsHandler newsHandler = new NewsHandler();
+			newsHandler.sendNewsToAllUsers(newsToSend);
+			newsDao.setNewsAsSent(newsToSend);
+			newsHandler.sendNewsToAdmin(newsSimilar);
 
 		} catch (Exception e) {
 			LOGGER.error(e);
+		}
+	}
+
+	private void retrieveNews() {
+		// Read RSS
+		RSSFeedParser parser = new RSSFeedParser(BotConfig.getSources());
+
+		LOGGER.info("Reading the rss...");
+		List<FeedMessage> feed = parser.readFeed();
+
+		List<NewsDto> newsDtos = newsDao.saveNewsFromFeeds(feed);
+		for (NewsDto newsDto : newsDtos) {
+			String title = newsDto.getTitle().replaceAll(",", "");
+			String[] words = title.split(" ");
+			long numberOfWordsInOtherNewsToday = Arrays.asList(words).stream().filter(word -> {
+				String cleanWord = word.trim();
+				return cleanWord.length() > LENGHT_OF_WORD_TO_CHECK
+						&& newsDao.areOtherNewsWithWordToday(cleanWord, newsDto.getId());
+			}).count();
+			if (numberOfWordsInOtherNewsToday > MIN_OF_N_WORDS_IN_TITLE) {
+				newsSimilar.add(newsDto);
+			} else {
+				newsToSend.add(newsDto);
+			}
 		}
 	}
 
@@ -87,6 +81,7 @@ public class ScheduledTask extends TimerTask {
 		} catch (TelegramApiException e) {
 			LOGGER.error("Impossible to create the bot.", e);
 		}
+		retrieveNews();
 	}
 
 	public static void main(String[] args) {

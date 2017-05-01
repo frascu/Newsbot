@@ -68,7 +68,7 @@
 						<index>true</index>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>com.frascu.bot.newsbot.schedule.NewsScheduler</mainClass>
+							<mainClass>com.frascu.bot.newsbot.schedule.ScheduledTask</mainClass>
 						</manifest>
 						<manifestEntries>
 							<mode>development</mode>

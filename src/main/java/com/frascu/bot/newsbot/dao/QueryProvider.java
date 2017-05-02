@@ -12,7 +12,11 @@ public class QueryProvider {
 
 	static final String QUERY_COUNT_NEWS_BY_CREATION_DATE_AND_TITLE = new StringBuilder("select count(*) from ")
 			.append(News.class.getCanonicalName())
-			.append(" where lower(title) like :word and id <> :id and creation_date > CURRENT_DATE").toString();
+			.append(" where lower(title) like :word and id <> :id and creationDate > CURRENT_DATE").toString();
+
+	static final String QUERY_GET_NEWS_BY_CREATION_DATE_AND_TITLE = new StringBuilder("select n from ")
+			.append(News.class.getCanonicalName())
+			.append(" n where lower(n.title) like :word and id <> :id and n.creationDate > CURRENT_DATE").toString();
 
 	// Users
 	static final String QUERY_GET_ALL_USERS = new StringBuilder("select user from ")

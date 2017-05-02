@@ -74,4 +74,17 @@ public class NewsDao extends DaoBase {
 				.setParameter("word", "%" + word.toLowerCase() + "%").setParameter("id", idNews).getSingleResult() > 0;
 	}
 
+	public List<NewsDto> getOtherNewsWithWordToday(String word, long idNews) {
+		try {
+			List<News> newsList = em.createQuery(QueryProvider.QUERY_GET_NEWS_BY_CREATION_DATE_AND_TITLE, News.class)
+					.setParameter("word", "%" + word.toLowerCase() + "%").setParameter("id", idNews).getResultList();
+
+			return newsList.stream().map(news -> new NewsDto(news.getId(), news.getLink(), news.getTitle()))
+					.collect(Collectors.toList());
+		} catch (Exception e) {
+			LOGGER.error(e);
+			return new ArrayList<>();
+		}
+	}
+
 }

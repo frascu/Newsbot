@@ -12,8 +12,8 @@ public class DaoBase {
 	private static EntityManagerFactory emfactory;
 	protected static EntityManager em;
 	protected static final Logger LOGGER = Logger.getLogger(DaoBase.class);
-	
-	static {
+
+	public static void init() {
 		try {
 			emfactory = Persistence.createEntityManagerFactory("newsbot");
 			em = emfactory.createEntityManager();
@@ -22,6 +22,17 @@ public class DaoBase {
 			System.exit(0);
 		}
 	}
+	
+	public static void close() {
+		try {
+			em.close();
+			emfactory.close();
+		} catch (Exception e) {
+			LOGGER.error(e);
+			System.exit(0);
+		}
+	}
+
 	private EntityTransaction entityTransaction;
 
 	public DaoBase() {

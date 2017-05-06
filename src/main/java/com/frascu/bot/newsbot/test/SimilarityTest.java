@@ -41,8 +41,7 @@ public class SimilarityTest {
 
 		System.out.println("Similar News:" + newsSimilar);
 		System.out.println("News to send:" + newsToSend);
-		Assert.assertTrue("The list of similar news is not correct", newsSimilar.size() == 2);
-		Assert.assertTrue("The list of news to send is not correct", newsToSend.size() == 0);
+		Assert.assertTrue("The lists are not correct.", (newsSimilar.size() + newsToSend.size()) == 2);
 	}
 
 	@Test

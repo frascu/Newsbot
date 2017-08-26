@@ -8,7 +8,7 @@ CREATE TABLE GROUP_TELEGRAM (
 
 CREATE TABLE NEWS (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `link` varchar(255) DEFAULT NULL,
+  `link` varchar(1000) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `pubblication_date` date DEFAULT NULL,
   `creation_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

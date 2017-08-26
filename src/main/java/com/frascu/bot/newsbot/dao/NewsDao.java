@@ -33,6 +33,7 @@ public class NewsDao extends DaoBase {
 			return dtos;
 		} catch (Exception e) {
 			LOGGER.error("Impossible to create the news from feed messages.", e);
+			rollbackTransaction();
 			return new ArrayList<>();
 		}
 	}

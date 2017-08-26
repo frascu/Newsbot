@@ -19,7 +19,6 @@ public class BotConfig {
 		prop = new Properties();
 		File file = new File("config.properties");
 		try {
-			file = new File("config.properties");
 			prop.load(new FileInputStream(file));
 			LOGGER.info("Properties read from configuration file: " + file.getAbsolutePath());
 		} catch (IOException e) {

@@ -12,11 +12,7 @@ import com.frascu.bot.newsbot.dto.UserDto;
 import com.frascu.bot.newsbot.telegram.Emoji;
 
 public class CommandDomainService {
-
-	private static final String USERS = "users";
 	private static CommandDomainService instance = new CommandDomainService();
-
-	private static final String COMMAND_NOT_EXISTING = "Il comando selezionato non esiste";
 
 	private static final String MESSAGE_START_ALREARY_REGISTERED = "Ciao %s\nsei già iscritto.";
 	private static final String MESSAGE_START_WELCOME = "Benvenuto %S\nquesto bot Vi aggiornerà sulle ultime notizie di Sannicandro di Bari.";
@@ -71,23 +67,13 @@ public class CommandDomainService {
 		return helpMessageBuilder.toString();
 	}
 
-	public String admin(String[] strings) {
+	public String getUsers(String[] strings) {
 		UserDao userDao = new UserDao();
-		StringBuilder messageBuilder = new StringBuilder();
-
-		if (strings != null && strings.length > 0) {
-			if (strings[0].equals(USERS)) {
-				getMessageWithAllUsers(messageBuilder, userDao.getAllUsers());
-			} else {
-				messageBuilder.append(COMMAND_NOT_EXISTING);
-			}
-		} else {
-			messageBuilder.append(COMMAND_NOT_EXISTING);
-		}
-		return messageBuilder.toString();
+		return getMessageWithAllUsers(userDao.getAllUsers());
 	}
 
-	private void getMessageWithAllUsers(StringBuilder messageBuilder, List<UserDto> users) {
+	private String getMessageWithAllUsers(List<UserDto> users) {
+		StringBuilder messageBuilder = new StringBuilder();
 		if (!users.isEmpty()) {
 			messageBuilder.append("<b>Utenti:</b>\n");
 			for (UserDto user : users) {
@@ -98,6 +84,7 @@ public class CommandDomainService {
 						.append("\n");
 			}
 		}
+		return messageBuilder.toString();
 	}
 
 	public String startGroup(Chat chat) {

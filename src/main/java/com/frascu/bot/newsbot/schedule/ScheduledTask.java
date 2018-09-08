@@ -20,7 +20,13 @@ import com.frascu.bot.newsbot.telegram.handler.CommandsHandler;
 import com.frascu.bot.newsbot.telegram.handler.NewsHandler;
 import com.frascu.bot.newsbot.util.NewsUtil;
 
-// Create a class extends with TimerTask
+/**
+ * This class contains the task that checks the news and sends them to the
+ * users.
+ * 
+ * @author franc
+ *
+ */
 public class ScheduledTask extends TimerTask {
 
 	private static final Logger LOGGER = Logger.getLogger(ScheduledTask.class);

@@ -69,12 +69,8 @@ public class NewsHandler extends TelegramLongPollingBot {
 			List<Long> userIds = userDao.getUserIdsRegistered();
 			List<Long> groupIds = groupDao.getGroupIdsRegistered();
 			for (NewsDto news : newsToSend) {
-				for (Long userId : userIds) {
-					sendNewsToChat(news, userId);
-				}
-				for (Long groupId : groupIds) {
-					sendNewsToChat(news, groupId);
-				}
+				userIds.forEach(u -> sendNewsToChat(news, u));
+				groupIds.forEach(g -> sendNewsToChat(news, g));
 			}
 
 		} else {

@@ -1,6 +1,5 @@
 package com.frascu.bot.newsbot.schedule;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -18,7 +17,6 @@ import com.frascu.bot.newsbot.rss.RSSFeedParser;
 import com.frascu.bot.newsbot.telegram.BotConfig;
 import com.frascu.bot.newsbot.telegram.handler.CommandsHandler;
 import com.frascu.bot.newsbot.telegram.handler.NewsHandler;
-import com.frascu.bot.newsbot.util.NewsUtil;
 
 /**
  * This class contains the task that checks the news and sends them to the
@@ -39,17 +37,7 @@ public class ScheduledTask extends TimerTask {
 	public void run() {
 		try {
 			List<NewsDto> newsDtos = readAndSaveFeed();
-
-			List<NewsDto> newsToSend = new ArrayList<>();
-			List<NewsDto> newsSimilar = new ArrayList<>();
-			NewsUtil.findSimilarNews(newsToSend, newsSimilar, newsDtos);
-
-			// Send news to users and to admin
-			NewsHandler newsHandler = new NewsHandler();
-			newsHandler.sendNewsToAllUsers(newsToSend);
-			newsDao.setNewsAsSent(newsToSend);
-			newsHandler.sendNewsToAdmin(newsSimilar);
-
+			new NewsHandler().sendNewsToAllUsers(newsDtos);
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
